@@ -1,0 +1,57 @@
+# Butter & Dough API Reference Guide
+
+This guide explains the purpose of each file in this project and provides instructions on how to configure, run, and test the backend.
+
+---
+
+## What Each File Does
+
+### 1. `main.py`
+The primary application file containing the complete, production-ready FastAPI backend:
+* **Endpoints**: 
+  * `GET /`: Health check and documentation links.
+  * `POST /butter`: Scrapes LinkedIn posts, calls Gemini, and returns a concise, up-to-5-bullet-point summary in Arabic.
+  * `POST /dough`: Accepts a short idea or note, and expands it into a professional Arabic post suitable for LinkedIn.
+* **Scraper**: A resilient BeautifulSoup-based scraper that extracts text from LinkedIn URLs using OpenGraph meta description tags and article fallbacks, executed asynchronously.
+* **Structured Output**: Uses Gemini's `response_schema` along with Pydantic schemas (`ButterSummaryLLM`, `DoughLLM`) to guarantee the LLM outputs strict JSON matching the expected structure.
+
+### 2. `test_endpoints.py`
+A comprehensive, offline-safe testing suite utilizing FastAPI's `TestClient`:
+* Mocks both the scraper and the Gemini API client.
+* Verifies validation rules, HTTP status codes, routing, and Pydantic schema validation without calling real web servers or incurring API costs.
+
+### 3. `.env`
+Local environment configuration file containing:
+* `GEMINI_API_KEY`: Your Google Gemini API key.
+* `GEMINI_MODEL`: The model targeted (defaults to `gemini-2.5-flash`).
+* `PORT`: Server port (defaults to `8000`).
+
+### 4. `.env.example`
+A template showing the structure of required configuration parameters, meant as a reference for deployment or other developers.
+
+### 5. `thebutter.py`
+The original scraper prototype file containing initial research code. This serves as historical reference; the actual production logic is implemented in `main.py`.
+
+---
+
+## How to Run the Code
+
+### 1. Configure the API Key
+Open the `.env` file and replace `your_gemini_api_key_here` with your actual Google Gemini API key:
+```bash
+GEMINI_API_KEY=AIzaSy...
+```
+
+### 2. Start the FastAPI Server
+Launch the server in auto-reload development mode:
+```bash
+uvicorn main:app --reload
+```
+* The API will run at: `http://localhost:8000`
+* The interactive API Swagger documentation page will be available at: `http://localhost:8000/docs`
+
+### 3. Run the Unit Tests
+To verify all endpoint routing, validation, and JSON schemas, execute the unit test suite:
+```bash
+python3 test_endpoints.py
+```
