@@ -15,6 +15,7 @@ jobs:
 
       - name: Build and restart
         run: |
-          docker stop butterapi-api-1 || true
-          docker rm butterapi-api-1 || true
-          docker-compose up -d --build
+    	cd /home/ec2-user/butterApi
+    	docker stop butterapi-api-1 || true
+    	docker rm butterapi-api-1 || true
+    	docker-compose up -d --build
